@@ -1,29 +1,31 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-import random
 import os
+import random
 
 app = Flask(__name__)
 
-# ✅ Use the DATABASE_URL environment variable and ensure correct format
+# 🔍 Check and correct the database URL
 uri = os.environ.get("DATABASE_URL")
-if uri and uri.startswith("postgres://"):
+if not uri:
+    raise RuntimeError("DATABASE_URL environment variable is not set. Check Render's Environment settings.")
+
+# 🔁 Convert postgres:// to postgresql://
+if uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
-elif not uri:
-    raise ValueError("DATABASE_URL environment variable is not set")
+
+print(f"🔌 Using database: {uri}")  # Logs to Render during build/startup
 
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
-# ✅ Define the database model
 class MoodEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mood = db.Column(db.String(100), nullable=False)
     note = db.Column(db.Text)
 
-# ✅ Random wellness quotes
 quotes = [
     "You don’t have to control your thoughts. You just have to stop letting them control you.",
     "It’s okay to not be okay.",
@@ -33,13 +35,11 @@ quotes = [
     "Healing is not linear. Be kind to yourself today."
 ]
 
-# ✅ Homepage route
 @app.route('/')
 def home():
     quote = random.choice(quotes)
     return render_template('index.html', quote=quote)
 
-# ✅ Mood form route
 @app.route('/mood', methods=['GET', 'POST'])
 def mood():
     if request.method == 'POST':
@@ -58,21 +58,17 @@ def mood():
 
     return render_template('mood.html')
 
-# ✅ Mood history route
 @app.route('/history')
 def history():
     entries = MoodEntry.query.order_by(MoodEntry.id.desc()).all()
     return render_template('history.html', entries=entries)
 
-# ✅ Automatically create tables (only runs once per deployment)
+# ✅ Force table creation at startup
 with app.app_context():
     db.create_all()
 
+# ✅ Optional: Manual route to re-run db.create_all()
 @app.route('/init-db')
 def init_db():
     db.create_all()
-    return "✅ Database tables created successfully."
-
-
-
-
+    return "✅ Tables created in PostgreSQL"
