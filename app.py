@@ -5,15 +5,17 @@ import random
 
 app = Flask(__name__)
 
-
 uri = os.environ.get("DATABASE_URL")
 if uri and uri.startswith("postgres://"):
     uri = uri.replace("postgres://", "postgresql://", 1)
+elif not uri:
+    raise ValueError("DATABASE_URL not set in environment")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+
 
 
 
