@@ -1,24 +1,27 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 import random
 import os
 
 app = Flask(__name__)
 
-# Use PostgreSQL database from Render environment variable
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# ✅ Use DATABASE_URL from Render (fix prefix for SQLAlchemy)
+uri = os.environ.get("DATABASE_URL")
+if uri and uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://", 1)
+app.config["SQLALCHEMY_DATABASE_URI"] = uri
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# ✅ Initialize database
 db = SQLAlchemy(app)
 
-# Database model
+# ✅ MoodEntry model
 class MoodEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mood = db.Column(db.String(100), nullable=False)
     note = db.Column(db.Text)
 
-# Random mental health quotes
+# ✅ Random wellness quotes
 quotes = [
     "You don’t have to control your thoughts. You just have to stop letting them control you.",
     "It’s okay to not be okay.",
@@ -28,13 +31,13 @@ quotes = [
     "Healing is not linear. Be kind to yourself today."
 ]
 
-# Homepage
+# ✅ Home page
 @app.route('/')
 def home():
     quote = random.choice(quotes)
     return render_template('index.html', quote=quote)
 
-# Mood form
+# ✅ Mood form page
 @app.route('/mood', methods=['GET', 'POST'])
 def mood():
     if request.method == 'POST':
@@ -53,13 +56,13 @@ def mood():
 
     return render_template('mood.html')
 
-# Mood history
+# ✅ Mood history page
 @app.route('/history')
 def history():
     entries = MoodEntry.query.order_by(MoodEntry.id.desc()).all()
     return render_template('history.html', entries=entries)
 
-# Create tables on app startup (even in deployment)
+# ✅ Create database tables on startup (for Render)
 with app.app_context():
     db.create_all()
 
