@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Log Your Mood</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>How are you feeling today?</h2>
+
+        <form method="POST">
+            <label for="mood">Select your mood:</label><br>
+            <select name="mood" id="mood">
+                <option value="">--Choose One--</option>
+                <option value="Happy">Happy</option>
+                <option value="Okay">Okay</option>
+                <option value="Sad">Sad</option>
+                <option value="Angry">Angry</option>
+                <option value="Anxious">Anxious</option>
+                <option value="Stressed">Stressed</option>
+                <option value="Tired">Tired</option>
+                <option value="Other">Other (enter below)</option>
+            </select><br><br>
+
+            <label for="custom_mood">Or type your own mood:</label><br>
+            <input type="text" id="custom_mood" name="custom_mood" placeholder="e.g. Grateful, Confused"><br><br>
+
+            <label for="note">Want to add a note?</label><br>
+            <textarea name="note" id="note" rows="4" cols="40" placeholder="Write anything you'd like..."></textarea><br><br>
+
+            <button type="submit" class="button">Save Mood</button>
+        </form>
+
+        <br>
+        <a href="/" class="button">Back to Home</a>
+    </div>
+</body>
+</html>

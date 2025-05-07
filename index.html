@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindBalance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to MindBalance</h1>
+        <p>Your space for self-care, journaling, and mood tracking.</p>
+
+        <div class="quote-box">
+            <em>"{{ quote }}"</em>
+        </div>
+
+        <a href="/mood" class="button">Get Started</a>
+        <br><br>
+        <a href="/history" class="button">View Mood History</a>
+
+        
+    </div>
+</body>
+</html>
+

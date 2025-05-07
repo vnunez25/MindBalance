@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mood History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Your Mood History</h2>
+
+        {% if entries %}
+            <ul style="list-style: none; padding: 0;">
+                {% for entry in entries %}
+                    <li style="margin-bottom: 20px; padding: 15px; background-color: #f7f7f7; border-radius: 10px;">
+                        <strong>Mood:</strong> {{ entry.mood }}<br>
+                        {% if entry.note %}
+                            <strong>Note:</strong> {{ entry.note }}<br>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't logged any moods yet.</p>
+        {% endif %}
+
+        <br>
+        <a href="/" class="button">Back to Home</a>
+    </div>
+</body>
+</html>
